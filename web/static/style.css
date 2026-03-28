@@ -1,0 +1,186 @@
+:root {
+    --bg-dark: #141414;
+    --card-dark: rgba(31, 31, 31, 0.4);
+    --accent-red: #e50914;
+    --text-main: #ffffff;
+    --text-muted: #b3b3b3;
+    --border-color: rgba(255, 255, 255, 0.15);
+}
+
+body {
+    background-image:
+        linear-gradient(180deg, rgba(20, 20, 20, 0.3) 0%, rgba(20, 20, 20, 0.6) 100%),
+        url("background.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--bg-dark);
+
+    color: var(--text-main);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    margin: 0;
+    padding-bottom: 50px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+
+.container {
+    margin-left: 5% !important;
+    margin-right: auto;
+    max-width: 900px !important;
+}
+
+/* Hero Section */
+.hero {
+    background: transparent !important;
+    padding: 3.5rem 0;
+    text-align: left !important;
+    margin-left: 5%;
+    margin-bottom: 1rem;
+}
+
+.hero h1 {
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--accent-red);
+    text-transform: uppercase;
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+/* Navigation */
+.nav-link-custom {
+    color: var(--text-main);
+    text-decoration: none;
+    margin-right: 20px;
+    font-weight: 700;
+    transition: 0.3s;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 18px;
+    border-radius: 50px;
+    display: inline-block;
+}
+
+.nav-link-custom:hover, .nav-link-custom.active {
+    color: var(--text-main);
+    background: var(--accent-red);
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+}
+
+/* Search Card - Glassmorphism */
+.search-card {
+    background: rgba(31, 31, 31, 0.5) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+    border-radius: 15px;
+}
+
+.form-label {
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.form-control, .form-select {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    color: white !important;
+    padding: 0.7rem;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-color: var(--accent-red);
+    box-shadow: none;
+}
+
+.btn-primary {
+    background-color: var(--accent-red);
+    border: none;
+    font-weight: 700;
+    padding: 0.7rem;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+.btn-primary:hover {
+    background-color: #ff0a16;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
+}
+
+/* Movies Table - "Floating" rows */
+.table {
+    color: var(--text-main);
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.table thead th {
+    border: none;
+    color: var(--text-main);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    padding-left: 20px;
+}
+
+.table tbody tr {
+    background-color: rgba(31, 31, 31, 0.4) !important;
+    backdrop-filter: blur(8px);
+    transition: 0.2s;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(45, 45, 45, 0.6) !important;
+    transform: scale(1.01);
+}
+
+.table td {
+    padding: 15px 20px;
+    vertical-align: middle;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table td:first-child { border-left: 1px solid var(--border-color); border-radius: 10px 0 0 10px; }
+.table td:last-child { border-right: 1px solid var(--border-color); border-radius: 0 10px 10px 0; }
+
+.badge-rating {
+    background-color: rgba(229, 9, 20, 0.2);
+    color: #ff4d4d;
+    border: 1px solid var(--accent-red);
+    font-weight: 800;
+}
+
+/* Analytics & History Items */
+.list-group-item {
+    background-color: rgba(31, 31, 31, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    color: white;
+    margin-bottom: 8px;
+    border-radius: 10px !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-red); }
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .container {
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 0 20px;
+    }
+    .hero {
+        text-align: center !important;
+        margin-left: 0;
+    }
+}

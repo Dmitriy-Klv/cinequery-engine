@@ -15,7 +15,7 @@ class LogRepository:
         """Aggregates and returns the most frequent search queries."""
         pipeline = [
             {"$group": {"_id": "$search_text", "count": {"$sum": 1}}},
-            {"$sort": {"count": -1}},
+            {"$sort": {"count": -1, "_id": 1}},
             {"$limit": limit},
             {"$project": {"_id": 0, "query": "$_id", "count": 1}},
         ]

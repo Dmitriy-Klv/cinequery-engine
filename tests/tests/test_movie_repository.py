@@ -35,7 +35,7 @@ class TestMovieRepository:
         """Verifies search functionality for 5 standard movie titles."""
 
         titles_to_check = [
-            "ARIZONA BANG",
+            "FISH OPUS",
             "BAKED CLEOPATRA",
             "BEACH HEARTBREAKERS",
             "CAT CONEHEADS",

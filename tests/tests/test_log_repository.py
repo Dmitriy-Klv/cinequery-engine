@@ -28,11 +28,9 @@ class TestMovieRepository:
         page_1 = all_history[:5]
         page_2 = all_history[5:10]
 
-        # Assertions
         assert len(page_1) == 5, f"Expected 5 items on page 1, got {len(page_1)}"
         assert len(page_2) == 5, f"Expected 5 items on page 2, got {len(page_2)}"
 
-        # Compare entire objects to ensure they are different unique records
         assert page_1[0] != page_2[0], "Records on Page 1 and Page 2 must be different movies"
 
         print(

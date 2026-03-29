@@ -38,3 +38,19 @@ class TestMovieRepository:
         print(
             f"\n[SUCCESS] History successfully populated with {len(random_titles)} unique titles."
         )
+
+    def test_get_top_queries_alphabetical_sorting_on_equal_count(self, log_repo):
+        log_repo.collection.delete_many({})
+        test_queries = ["C", "A", "B"]
+        for query in test_queries:
+            for _ in range(2):
+                log_repo.collection.insert_one({"search_text": query})
+
+        top_queries = log_repo.get_top_queries(limit=5)
+
+        assert len(top_queries) == 3
+        for item in top_queries:
+            assert item["count"] == 2
+
+        results = [item["query"] for item in top_queries]
+        assert results == ["A", "B", "C"]

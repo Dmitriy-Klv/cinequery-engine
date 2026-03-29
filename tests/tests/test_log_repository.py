@@ -54,3 +54,15 @@ class TestMovieRepository:
 
         results = [item["query"] for item in top_queries]
         assert results == ["A", "B", "C"]
+
+    def test_get_top_queries_respects_count_priority(self, log_repo):
+        log_repo.collection.delete_many({})
+        for _ in range(5):
+            log_repo.collection.insert_one({"search_text": "B"})
+        for _ in range(3):
+            log_repo.collection.insert_one({"search_text": "A"})
+
+        top_queries = log_repo.get_top_queries(limit=2)
+
+        assert top_queries[0]["query"] == "B"
+        assert top_queries[1]["query"] == "A"

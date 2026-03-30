@@ -19,7 +19,7 @@ def log_repo():
 @pytest.fixture
 def random_titles_factory(movie_repo):
     """
-    Factory fixture to fetch a unique set of random titles from Sakila.
+    Factory fixture to fetch a unique set of random titles from DB.
     """
 
     def _generate_titles(count=10):

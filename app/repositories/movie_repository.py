@@ -29,7 +29,7 @@ class MovieRepository:
         ]
 
     def _save_log(
-        self, query_text: str, results_count: int, search_type: str = "keyword", params: dict = None
+            self, query_text: str, results_count: int, search_type: str = "keyword", params: dict = None
     ):
         """Logs search activity to MongoDB."""
         try:
@@ -65,21 +65,27 @@ class MovieRepository:
         return movies, len(results) > limit
 
     def search_all(self, keyword: str) -> List[Movie]:
-        """Performs a full keyword search with a safety limit."""
+        """Performs a full keyword search with a safety limit.
+        Note: Does not create a new log entry because the search
+        was already logged on the first page (page=1).
+        """
         limit = 1000
-        sql = "SELECT film_id, title, release_year, description, rating FROM film WHERE LOWER(title) LIKE %s LIMIT %s"
+        sql = """
+            SELECT film_id, title, release_year, description, rating 
+            FROM film 
+            WHERE LOWER(title) LIKE %s 
+            LIMIT %s
+        """
 
         with self.mysql.connection.cursor() as cur:
             cur.execute(sql, (f"%{keyword.lower().strip()}%", limit))
             results = cur.fetchall()
 
         movies = self._map_to_movies(results)
-        self._save_log(keyword, len(movies), search_type="full_keyword_search")
-
         return movies
 
     def find_by_category_and_year(
-        self, categories: List[str], start: int, end: int, page: int = 1, limit: int = 10
+            self, categories: List[str], start: int, end: int, page: int = 1, limit: int = 10
     ) -> Tuple[List[Movie], bool]:
         """Filters movies by categories and release year range."""
         if not categories:
@@ -107,7 +113,7 @@ class MovieRepository:
 
         movies = self._map_to_movies(results[:limit])
 
-        if page == 1:
+        if page == 1 and limit <= 50:
             self._save_log(
                 ", ".join(categories),
                 len(movies),

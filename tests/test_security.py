@@ -1,4 +1,5 @@
 import pytest
+
 from tests.utils import SQL_INJECTION_PAYLOADS
 
 

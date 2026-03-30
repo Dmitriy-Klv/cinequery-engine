@@ -1,7 +1,8 @@
 import sys
-from cli.menu import CineQueryApp
-from app.core.database.mysql import db_mysql
+
 from app.core.database.mongo import db_mongo
+from app.core.database.mysql import db_mysql
+from cli.menu import CineQueryApp
 
 
 def main():

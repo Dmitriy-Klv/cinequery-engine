@@ -29,7 +29,7 @@ class MovieRepository:
         ]
 
     def _save_log(
-            self, query_text: str, results_count: int, search_type: str = "keyword", params: dict = None
+        self, query_text: str, results_count: int, search_type: str = "keyword", params: dict = None
     ):
         """Logs search activity to MongoDB."""
         try:
@@ -85,7 +85,7 @@ class MovieRepository:
         return movies
 
     def find_by_category_and_year(
-            self, categories: List[str], start: int, end: int, page: int = 1, limit: int = 10
+        self, categories: List[str], start: int, end: int, page: int = 1, limit: int = 10
     ) -> Tuple[List[Movie], bool]:
         """Filters movies by categories and release year range."""
         if not categories:

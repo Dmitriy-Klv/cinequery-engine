@@ -5,8 +5,9 @@ SQL_INJECTION_PAYLOADS = [
     "'; DROP TABLE film; --",
     "'; SELECT user, password FROM mysql.user; --",
     "%; --",
-    "A" * 1000
+    "A" * 1000,
 ]
+
 
 def get_random_titles(movie_repo, count=10):
     """Helper function to get unique random titles from DB."""

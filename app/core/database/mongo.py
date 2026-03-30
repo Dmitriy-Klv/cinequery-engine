@@ -17,5 +17,11 @@ class MongoDatabase:
             self._client = pymongo.MongoClient(settings.MONGO_URI)
         return self._client[settings.MONGO_DB]
 
+    def close(self):
+        """Safely closes MongoDB client."""
+        if self._client:
+            self._client.close()
+            self._client = None
+
 
 db_mongo = MongoDatabase()

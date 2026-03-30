@@ -24,5 +24,11 @@ class MySQLDatabase:
             )
         return self._connection
 
+    def close(self):
+        """Safely closes the MySQL connection."""
+        if self._connection and self._connection.open:
+            self._connection.close()
+            self._connection = None
+
 
 db_mysql = MySQLDatabase()

@@ -114,8 +114,9 @@ class MovieRepository:
         movies = self._map_to_movies(results[:limit])
 
         if page == 1 and limit <= 50:
+            query_text = f"{', '.join(categories)} ({start}-{end})"
             self._save_log(
-                ", ".join(categories),
+                query_text,
                 len(movies),
                 "multi_category_filter",
                 {"categories": categories, "start": start, "end": end},

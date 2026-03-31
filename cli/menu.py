@@ -236,6 +236,12 @@ class CineQueryApp(App):
         """Executes search based on title keywords."""
         if self.last_keyword:
             movies, has_more = self.movie_repo.search(self.last_keyword, page=self.search_page)
+            if not movies and clear:
+                self.notify(
+                    f"No results found for '{self.last_keyword}'",
+                    title="Search Result",
+                    severity="warning"
+                )
             self._fill_table("#movie_table", movies, clear=clear)
             self.query_one("#next_search_btn").display = has_more
             self.query_one("#load_all_search_btn").display = has_more or not clear

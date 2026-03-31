@@ -141,3 +141,89 @@ class TestMovieRepository:
         """Checking search using special characters (protection against crashes)."""
         movies, _ = movie_repo.search("'; --", page=1)
         assert isinstance(movies, list)
+
+    def test_find_by_category_validation(self, movie_repo):
+        """Validates that each returned movie matches the selected category in DB."""
+        target_category = "Action"
+
+        movies, has_more = movie_repo.find_by_category_and_year(
+            categories=[target_category], start=1900, end=2026, page=1
+        )
+
+        assert len(movies) > 0
+
+        validation_sql = """
+            SELECT c.name 
+            FROM category c
+            JOIN film_category fc ON c.category_id = fc.category_id
+            WHERE fc.film_id = %s AND c.name = %s
+        """
+
+        with movie_repo.mysql.connection.cursor() as cur:
+            for movie in movies:
+                assert isinstance(movie, Movie)
+                cur.execute(validation_sql, (movie.movie_id, target_category))
+                result = cur.fetchone()
+
+                assert result is not None
+                assert result["name"] == target_category
+
+    def test_find_by_multiple_categories(self, movie_repo):
+        """Ensures movies belong to at least one of the multiple selected categories."""
+        target_categories = ["Action", "Comedy"]
+
+        movies, _ = movie_repo.find_by_category_and_year(
+            categories=target_categories, start=1900, end=2026, page=1
+        )
+
+        validation_sql = """
+            SELECT COUNT(*) as count
+            FROM category c
+            JOIN film_category fc ON c.category_id = fc.category_id
+            WHERE fc.film_id = %s AND c.name IN (%s, %s)
+        """
+
+        with movie_repo.mysql.connection.cursor() as cur:
+            for movie in movies:
+                cur.execute(
+                    validation_sql, (movie.movie_id, target_categories[0], target_categories[1])
+                )
+                res = cur.fetchone()
+                assert res["count"] > 0
+
+    def test_filter_by_year_range_integrity(self, movie_repo):
+        """Checks if all returned movies fall within the specified year range."""
+        start_year, end_year = 2005, 2006
+        category = "Action"
+
+        movies, _ = movie_repo.find_by_category_and_year(
+            categories=[category], start=start_year, end=end_year, page=1
+        )
+
+        for movie in movies:
+            assert start_year <= movie.release_year <= end_year
+
+    def test_movies_match_selected_category(self, movie_repo):
+        """Cross-checks repository output with actual database mapping."""
+        test_category = "Action"
+
+        movies, _ = movie_repo.find_by_category_and_year(
+            categories=[test_category], start=1900, end=2026, page=1
+        )
+
+        assert len(movies) > 0
+
+        validation_query = """
+            SELECT c.name 
+            FROM category c
+            JOIN film_category fc ON c.category_id = fc.category_id
+            WHERE fc.film_id = %s AND c.name = %s
+        """
+
+        with movie_repo.mysql.connection.cursor() as cursor:
+            for movie in movies:
+                cursor.execute(validation_query, (movie.movie_id, test_category))
+                result = cursor.fetchone()
+
+                assert result is not None
+                assert result["name"] == test_category

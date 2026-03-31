@@ -251,8 +251,8 @@ class CineQueryApp(App):
         """Configures initial UI state on application mount."""
         for tid in ["#movie_table", "#cat_movie_table"]:
             self.query_one(tid, DataTable).add_columns("№", "Title", "Year", "Rating")
-        self.query_one("#stats_table", DataTable).add_columns("Query", "Count")
-        self.query_one("#history_table", DataTable).add_columns("Time", "Query", "Found")
+        self.query_one("#stats_table", DataTable).add_columns("№", "Query", "Count")
+        self.query_one("#history_table", DataTable).add_columns("№", "Time", "Query", "Found")
 
         self.query_one("#next_search_btn").display = False
         self.query_one("#load_all_search_btn").display = False
@@ -265,10 +265,19 @@ class CineQueryApp(App):
         """Updates stats and history tables from LogRepository."""
         st_table = self.query_one("#stats_table", DataTable)
         st_table.clear()
-        for s in self.log_repo.get_top_queries():
-            st_table.add_row(s["query"], str(s["count"]))
+        for i, s in enumerate(self.log_repo.get_top_queries(), start=1):
+            st_table.add_row(
+                str(i),
+                s["query"],
+                str(s["count"])  #
+            )
 
         h_table = self.query_one("#history_table", DataTable)
         h_table.clear()
-        for log in self.log_repo.get_history():
-            h_table.add_row(log.get("time", "N/A"), log.get("query"), str(log.get("results_found")))
+        for i, log in enumerate(self.log_repo.get_history(), start=1):
+            h_table.add_row(
+                str(i),
+                log.get("time", "N/A"),
+                log.get("query"),
+                str(log.get("results_found"))
+            )

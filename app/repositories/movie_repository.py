@@ -88,6 +88,9 @@ class MovieRepository:
         self, categories: List[str], start: int, end: int, page: int = 1, limit: int = 10
     ) -> Tuple[List[Movie], bool]:
         """Filters movies by categories and release year range."""
+        if start > end:
+            return [], False
+
         if not categories:
             return [], False
 

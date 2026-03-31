@@ -148,8 +148,8 @@ class CineQueryApp(App):
     def update_filter_display(self):
         """Refreshes the active filters display panel."""
         genres_text = ", ".join(self.selected_genres) if self.selected_genres else "None"
-        low = min(self.start_y, self.end_y)
-        high = max(self.start_y, self.end_y)
+        low = self.start_y
+        high = self.end_y
         info_text = f"ACTIVE FILTERS: [Genres: {genres_text}] | [Years: {low} - {high}]"
         self.query_one("#active_filters_info", Static).update(info_text)
 
@@ -214,8 +214,8 @@ class CineQueryApp(App):
     def perform_category_search(self, clear=True):
         """Executes a search based on selected categories and years."""
         if self.selected_genres:
-            real_start = min(self.start_y, self.end_y)
-            real_end = max(self.start_y, self.end_y)
+            real_start = self.start_y
+            real_end = self.end_y
             movies, has_more = self.movie_repo.find_by_category_and_year(
                 self.selected_genres, real_start, real_end, page=self.category_page
             )

@@ -64,8 +64,8 @@ async def search(
         target_categories = [category] if category != "All" else movie_repo.get_all_categories()
         movies, _ = movie_repo.find_by_category_and_year(
             categories=target_categories,
-            start=min(start, end),
-            end=max(start, end),
+            start=start,
+            end=end,
             page=1,
             limit=500,
         )

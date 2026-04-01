@@ -26,12 +26,12 @@ class LogRepository:
         logs = list(self.collection.find({}, {"_id": 0}).sort("timestamp", -1).limit(limit))
 
         for log in logs:
-            if "date" in log and "hour" in log:
+            if "timestamp" in log:
+                log["time"] = log["timestamp"].strftime("%Y-%m-%d %H:%M")
+            elif "date" in log and "hour" in log:
                 log["time"] = f"{log['date']} {log['hour']:02d}:00"
             else:
-                log["time"] = (
-                    log["timestamp"].strftime("%Y-%m-%d %H:%M") if "timestamp" in log else "N/A"
-                )
+                log["time"] = "N/A"
 
             log["query"] = log.get("search_text", log.get("query", "N/A"))
             log["results_found"] = log.get("results_count", log.get("results_found", 0))

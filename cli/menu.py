@@ -127,6 +127,7 @@ class CineQueryApp(App):
                 with Horizontal(id="button_row"):
                     yield Button("Load 10 More", id="next_cat_btn", variant="primary")
                     yield Button("Load All Results", id="load_all_btn", variant="success")
+                    yield Button("Clear Filters", id="clear_filters_btn", variant="error")
 
             with TabPane("🔥 Top 5", id="stats_tab"):
                 yield DataTable(id="stats_table")
@@ -211,6 +212,29 @@ class CineQueryApp(App):
             self.query_one("#next_cat_btn").display = False
             self.query_one("#load_all_btn").display = False
 
+    @on(Button.Pressed, "#clear_filters_btn")
+    def handle_clear_filters(self):
+        """Resets all filters to default state."""
+
+        self.selected_genres = []
+        self.start_y = self.min_db
+        self.end_y = self.max_db
+        self.category_page = 1
+
+        genre_list = self.query_one("#genre_sel", SelectionList)
+        genre_list.deselect_all()
+
+        self.query_one("#year_start_strip", OptionList).highlighted = 0
+        self.query_one("#year_end_strip", OptionList).highlighted = 0
+        self.query_one("#cat_movie_table", DataTable).clear()
+
+        self.update_filter_display()
+
+        self.query_one("#next_cat_btn").display = False
+        self.query_one("#load_all_btn").display = False
+
+        self.refresh_logs()
+
     def perform_category_search(self, clear=True):
         """Executes a search based on selected categories and years."""
         if self.selected_genres:
@@ -240,7 +264,7 @@ class CineQueryApp(App):
                 self.notify(
                     f"No results found for '{self.last_keyword}'",
                     title="Search Result",
-                    severity="warning"
+                    severity="warning",
                 )
             self._fill_table("#movie_table", movies, clear=clear)
             self.query_one("#next_search_btn").display = has_more
@@ -250,7 +274,7 @@ class CineQueryApp(App):
     def on_mount(self) -> None:
         """Configures initial UI state on application mount."""
         for tid in ["#movie_table", "#cat_movie_table"]:
-            self.query_one(tid, DataTable).add_columns("№", "Title", "Year", "Rating")
+            self.query_one(tid, DataTable).add_columns("№", "Title", "Year", "Age Ratings")
         self.query_one("#stats_table", DataTable).add_columns("№", "Query", "Count")
         self.query_one("#history_table", DataTable).add_columns("№", "Time", "Query", "Found")
 
@@ -266,18 +290,11 @@ class CineQueryApp(App):
         st_table = self.query_one("#stats_table", DataTable)
         st_table.clear()
         for i, s in enumerate(self.log_repo.get_top_queries(), start=1):
-            st_table.add_row(
-                str(i),
-                s["query"],
-                str(s["count"])  #
-            )
+            st_table.add_row(str(i), s["query"], str(s["count"]))  #
 
         h_table = self.query_one("#history_table", DataTable)
         h_table.clear()
         for i, log in enumerate(self.log_repo.get_history(), start=1):
             h_table.add_row(
-                str(i),
-                log.get("time", "N/A"),
-                log.get("query"),
-                str(log.get("results_found"))
+                str(i), log.get("time", "N/A"), log.get("query"), str(log.get("results_found"))
             )

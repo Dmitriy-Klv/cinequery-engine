@@ -293,7 +293,7 @@ class CineQueryApp(App):
         self.refresh_logs()
 
     def refresh_logs(self):
-        """Updates Top 5 and History tables."""
+        """Updates Top 5 and History with different icons without changing the repository."""
 
         st_table = self.query_one("#stats_table", DataTable)
         st_table.clear()
@@ -323,7 +323,7 @@ class CineQueryApp(App):
                 elif i == 4:
                     bar_color = "orange3"
                     query_color = "orange3"
-                else:  # 5-е место
+                else:
                     bar_color = "red"
                     query_color = "red"
 
@@ -348,12 +348,22 @@ class CineQueryApp(App):
                 query = str(log.get("query", "—")).strip()
                 found = log.get("results_found", 0)
 
-                display_query = (query[:42] + "…") if len(query) > 42 else query
+                query_lower = query.lower()
+                if "(" in query_lower and any(
+                    year in query_lower for year in ["1990", "2000", "2010", "2020", "2026"]
+                ):
+                    icon = "📂"
+                    icon_color = "cyan"
+                else:
+                    icon = "🔍"
+                    icon_color = "violet"
+
+                display_query = (query[:40] + "…") if len(query) > 40 else query
 
                 h_table.add_row(
                     f"[dim]{i:>2}[/dim]",
                     f"[blue]{time_str}[/blue]",
-                    f"[white]🔍 {display_query}[/white]",
+                    f"[{icon_color}]{icon}[/] [white]{display_query}[/white]",
                     f"[white]{found}[/white]",
                 )
         else:

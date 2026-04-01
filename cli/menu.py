@@ -207,19 +207,11 @@ class CineQueryApp(App):
             return
 
         if self.start_y > self.end_y:
-            self.notify(
-                "Invalid year range (From > To)",
-                title="Filter Error",
-                severity="error"
-            )
+            self.notify("Invalid year range (From > To)", title="Filter Error", severity="error")
             return
 
         movies, _ = self.movie_repo.find_by_category_and_year(
-            self.selected_genres,
-            self.start_y,
-            self.end_y,
-            page=1,
-            limit=1000
+            self.selected_genres, self.start_y, self.end_y, page=1, limit=1000
         )
 
         self._fill_table("#cat_movie_table", movies, clear=True)
@@ -301,15 +293,73 @@ class CineQueryApp(App):
         self.refresh_logs()
 
     def refresh_logs(self):
-        """Updates stats and history tables from LogRepository."""
+        """Updates Top 5 and History tables."""
+
         st_table = self.query_one("#stats_table", DataTable)
         st_table.clear()
-        for i, s in enumerate(self.log_repo.get_top_queries(), start=1):
-            st_table.add_row(str(i), s["query"], str(s["count"]))  #
+
+        top_queries = self.log_repo.get_top_queries()
+
+        if top_queries:
+            max_count = max((s.get("count", 0) for s in top_queries), default=1)
+
+            for i, s in enumerate(top_queries, start=1):
+                count = s.get("count", 0)
+                query = str(s.get("query", "")).upper().strip() or "—"
+
+                bar_length = int((count / max_count) * 25)
+                filled = "█" * bar_length
+                empty = "░" * (25 - bar_length)
+
+                if i == 1:
+                    bar_color = "bright_green"
+                    query_color = "bright_green"
+                elif i == 2:
+                    bar_color = "green"
+                    query_color = "green"
+                elif i == 3:
+                    bar_color = "yellow"
+                    query_color = "yellow"
+                elif i == 4:
+                    bar_color = "orange3"
+                    query_color = "orange3"
+                else:  # 5-е место
+                    bar_color = "red"
+                    query_color = "red"
+
+                st_table.add_row(
+                    f"[bold yellow]{i:>2}[/]",
+                    f"🔥 [{query_color}]{query}[/]",
+                    f"[{bar_color}]{filled}{empty}[/] [bold {bar_color}]{count}[/] [dim]hits[/dim]",
+                )
+        else:
+            st_table.add_row(
+                "[dim]—[/dim]", "[dim italic]No popular queries yet[/dim italic]", "[dim]—[/dim]"
+            )
 
         h_table = self.query_one("#history_table", DataTable)
         h_table.clear()
-        for i, log in enumerate(self.log_repo.get_history(), start=1):
+
+        history_logs = self.log_repo.get_history()
+
+        if history_logs:
+            for i, log in enumerate(history_logs, start=1):
+                time_str = log.get("time", "N/A")
+                query = str(log.get("query", "—")).strip()
+                found = log.get("results_found", 0)
+
+                display_query = (query[:42] + "…") if len(query) > 42 else query
+
+                h_table.add_row(
+                    f"[dim]{i:>2}[/dim]",
+                    f"[blue]{time_str}[/blue]",
+                    f"[white]🔍 {display_query}[/white]",
+                    f"[white]{found}[/white]",
+                )
+        else:
             h_table.add_row(
-                str(i), log.get("time", "N/A"), log.get("query"), str(log.get("results_found"))
+                "[dim]—[/dim]",
+                "[dim]—[/dim]",
+                "[dim italic]No searches performed yet[/dim italic]",
+                "[dim]—[/dim]",
             )

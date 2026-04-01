@@ -202,15 +202,30 @@ class CineQueryApp(App):
     @on(Button.Pressed, "#load_all_btn")
     def handle_load_all(self):
         """Fetches all results matching the active filters."""
-        if self.selected_genres:
-            real_start = min(self.start_y, self.end_y)
-            real_end = max(self.start_y, self.end_y)
-            movies, _ = self.movie_repo.find_by_category_and_year(
-                self.selected_genres, real_start, real_end, page=1, limit=1000
+
+        if not self.selected_genres:
+            return
+
+        if self.start_y > self.end_y:
+            self.notify(
+                "Invalid year range (From > To)",
+                title="Filter Error",
+                severity="error"
             )
-            self._fill_table("#cat_movie_table", movies, clear=True)
-            self.query_one("#next_cat_btn").display = False
-            self.query_one("#load_all_btn").display = False
+            return
+
+        movies, _ = self.movie_repo.find_by_category_and_year(
+            self.selected_genres,
+            self.start_y,
+            self.end_y,
+            page=1,
+            limit=1000
+        )
+
+        self._fill_table("#cat_movie_table", movies, clear=True)
+
+        self.query_one("#next_cat_btn").display = False
+        self.query_one("#load_all_btn").display = False
 
     @on(Button.Pressed, "#clear_filters_btn")
     def handle_clear_filters(self):

@@ -60,9 +60,9 @@ The project is built following clean architecture principles:
 
 ### 🔑 Key Principles
 
--   Separation of concerns\
--   Repository pattern\
--   Minimal code duplication\
+-   Separation of concerns
+-   Repository pattern
+-   Minimal code duplication
 -   PEP8 compliance
 
 ------------------------------------------------------------------------
@@ -70,12 +70,12 @@ The project is built following clean architecture principles:
 # 🛠 Technologies
 
 -   Python 3.10+
--   MySQL\
--   MongoDB\
--   FastAPI\
--   Textual (TUI)\
--   pymysql / pymongo\
--   Jinja2\
+-   MySQL
+-   MongoDB
+-   FastAPI
+-   Textual (TUI)
+-   pymysql / pymongo
+-   Jinja2
 -   pytest
 
 ------------------------------------------------------------------------

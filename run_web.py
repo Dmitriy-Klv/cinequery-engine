@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 import uvicorn
@@ -6,10 +7,20 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from app.core.database.mongo import db_mongo
+from app.core.database.mysql import db_mysql
 from app.repositories.log_repository import LogRepository
 from app.repositories.movie_repository import MovieRepository
 
-app = FastAPI(title="CineQuery Web")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    db_mysql.close()
+    db_mongo.close()
+
+
+app = FastAPI(title="CineQuery Web", lifespan=lifespan)
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "web" / "templates"))
@@ -24,7 +35,6 @@ log_repo = LogRepository()
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    """Renders the main search page with categories and year range."""
     categories = movie_repo.get_all_categories()
     min_y, max_y = movie_repo.get_year_range()
 
@@ -51,7 +61,6 @@ async def search(
     year_start: int = Form(None),
     year_end: int = Form(None),
 ):
-    """Processes search requests by title, category, or year range."""
     min_db, max_db = movie_repo.get_year_range()
     start = year_start if year_start is not None else min_db
     end = year_end if year_end is not None else max_db
@@ -67,7 +76,7 @@ async def search(
             start=start,
             end=end,
             page=1,
-            limit=500,
+            limit=20,
         )
 
     return templates.TemplateResponse(
@@ -89,7 +98,6 @@ async def search(
 
 @app.get("/analytics", response_class=HTMLResponse)
 async def analytics(request: Request):
-    """Displays top search queries from the analytics repository."""
     return templates.TemplateResponse(
         "index.html", {"request": request, "stats": log_repo.get_top_queries(), "view": "analytics"}
     )
@@ -97,11 +105,10 @@ async def analytics(request: Request):
 
 @app.get("/history", response_class=HTMLResponse)
 async def history(request: Request):
-    """Displays the recent search activity history."""
     return templates.TemplateResponse(
         "index.html", {"request": request, "history": log_repo.get_history(), "view": "history"}
     )
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8001)
+    uvicorn.run("run_web:app", host="127.0.0.1", port=8001, reload=True)

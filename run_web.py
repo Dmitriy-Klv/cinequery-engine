@@ -60,23 +60,25 @@ async def search(
     category: str = Form("All"),
     year_start: int = Form(None),
     year_end: int = Form(None),
+    page: int = Form(1)
 ):
     min_db, max_db = movie_repo.get_year_range()
     start = year_start if year_start is not None else min_db
     end = year_end if year_end is not None else max_db
-
+    limit = 20
     movies = []
+    total = 0
 
     if keyword and keyword.strip():
-        movies, _ = movie_repo.search(keyword, page=1)
+        movies, total = movie_repo.search(keyword, page=page)
     elif category:
         target_categories = [category] if category != "All" else movie_repo.get_all_categories()
-        movies, _ = movie_repo.find_by_category_and_year(
+        movies, total = movie_repo.find_by_category_and_year(
             categories=target_categories,
             start=start,
             end=end,
-            page=1,
-            limit=20,
+            page=page,
+            limit=limit,
         )
 
     return templates.TemplateResponse(
@@ -92,6 +94,8 @@ async def search(
             "current_end": end,
             "last_keyword": keyword,
             "selected_cat": category,
+            "current_page": page,
+            "has_more": total > (page * limit)
         },
     )
 

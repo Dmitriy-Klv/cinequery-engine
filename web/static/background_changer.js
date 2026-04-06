@@ -4,7 +4,13 @@ document.addEventListener("DOMContentLoaded", function () {
         "/static/images/bg2.jpg",
         "/static/images/bg3.jpg",
         "/static/images/bg4.jpg",
-        "/static/images/bg5.jpg"
+        "/static/images/bg5.jpg",
+        "/static/images/bg6.jpg",
+        "/static/images/bg7.jpg",
+        "/static/images/bg8.jpg",
+        "/static/images/bg9.jpg",
+        "/static/images/bg10.jpg",
+        "/static/images/bg11.jpg"
     ];
 
     let currentIndex = 1;

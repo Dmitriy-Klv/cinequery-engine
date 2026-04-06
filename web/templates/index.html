@@ -23,7 +23,7 @@
 
     {% if view == "search" %}
     <div class="card search-card p-4 mb-5">
-       <form id="searchForm" class="row g-3">
+        <form id="searchForm" class="row g-3">
             <div class="col-md-3">
                 <label class="form-label">Keyword</label>
                 <input type="text" name="keyword" class="form-control" placeholder="Title..." value="{{ last_keyword or '' }}">
@@ -53,8 +53,9 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">FIND</button>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1">FIND</button>
+                <button type="button" id="clearBtn" class="btn btn-outline-secondary" title="Clear results">✕</button>
             </div>
         </form>
     </div>
@@ -133,7 +134,8 @@
     </div>
     {% endif %}
 </div>
+
 <script src="/static/search_ajax.js"></script>
-    <script src="/static/background_changer.js"></script>
+<script src="/static/background_changer.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const searchForm = document.getElementById("searchForm");
     const tableBody = document.getElementById("movieTableBody");
+    const clearBtn = document.getElementById("clearBtn");
 
     if (searchForm) {
         searchForm.addEventListener("submit", async function(e) {
@@ -29,6 +30,22 @@ document.addEventListener("DOMContentLoaded", function() {
             } finally {
                 tableBody.style.opacity = "1";
             }
+        });
+    }
+
+    if (clearBtn && searchForm) {
+        clearBtn.addEventListener("click", function() {
+            searchForm.reset();
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-5 text-muted">
+                        No movies found. Try adjusting your filters.
+                    </td>
+                </tr>
+            `;
+
+            tableBody.style.opacity = "1";
         });
     }
 });

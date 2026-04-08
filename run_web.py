@@ -55,31 +55,43 @@ async def index(request: Request):
 
 @app.post("/search", response_class=HTMLResponse)
 async def search(
-    request: Request,
-    keyword: str = Form(None),
-    category: str = Form("All"),
-    year_start: int = Form(None),
-    year_end: int = Form(None),
-    page: int = Form(1)
+        request: Request,
+        keyword: str = Form(None),
+        category: str = Form("All"),
+        year_start: int = Form(None),
+        year_end: int = Form(None),
+        page: int = Form(1),
+        show_all: bool = Form(False)
 ):
     min_db, max_db = movie_repo.get_year_range()
     start = year_start if year_start is not None else min_db
     end = year_end if year_end is not None else max_db
     limit = 20
     movies = []
-    total = 0
+    has_more = False
 
     if keyword and keyword.strip():
-        movies, total = movie_repo.search(keyword, page=page)
-    elif category:
+        if page == 1:
+            log_repo.add_log(keyword)
+
+        if show_all:
+            movies = movie_repo.search_all(keyword)
+            has_more = False
+        else:
+            movies, total = movie_repo.search(keyword, page=page, limit=limit)
+            has_more = total > (page * limit)
+    else:
         target_categories = [category] if category != "All" else movie_repo.get_all_categories()
+
+        current_limit = 1000 if show_all else limit
         movies, total = movie_repo.find_by_category_and_year(
             categories=target_categories,
             start=start,
             end=end,
             page=page,
-            limit=limit,
+            limit=current_limit,
         )
+        has_more = total > (page * current_limit) if not show_all else False
 
     return templates.TemplateResponse(
         "index.html",
@@ -95,7 +107,8 @@ async def search(
             "last_keyword": keyword,
             "selected_cat": category,
             "current_page": page,
-            "has_more": total > (page * limit)
+            "has_more": has_more,
+            "show_all": show_all
         },
     )
 

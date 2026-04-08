@@ -20,10 +20,9 @@
 </div>
 
 <div class="container">
-
     {% if view == "search" %}
     <div class="card search-card p-4 mb-5">
-        <form id="searchForm" class="row g-3">
+        <form id="searchForm" method="post" class="row g-3">
             <div class="col-md-3">
                 <label class="form-label">Keyword</label>
                 <input type="text" name="keyword" class="form-control" placeholder="Title..." value="{{ last_keyword or '' }}">
@@ -55,7 +54,7 @@
             </div>
             <div class="col-md-2 d-flex align-items-end gap-2">
                 <button type="submit" class="btn btn-primary flex-grow-1">FIND</button>
-                <button type="button" id="clearBtn" class="btn btn-outline-secondary" title="Clear results">✕</button>
+                <button type="button" id="clearBtn" class="btn btn-outline-secondary">✕</button>
             </div>
         </form>
     </div>
@@ -73,24 +72,29 @@
             <tbody id="movieTableBody">
                 {% for movie in movies %}
                 <tr>
-                    <td class="text-muted">{{ loop.index }}</td>
+                    <td class="text-muted">{{ loop.index + ((current_page|default(1) - 1) * 20) }}</td>
                     <td class="fw-bold">{{ movie.title }}</td>
                     <td>{{ movie.release_year }}</td>
-                    <td>
-                        <span class="badge badge-rating">
-                            {{ movie.rating_text }}
-                        </span>
-                    </td>
+                    <td><span class="badge badge-rating">{{ movie.rating_text }}</span></td>
                 </tr>
                 {% else %}
-                <tr>
-                    <td colspan="4" class="text-center py-5 text-muted">
-                        No movies found. Try adjusting your filters.
-                    </td>
-                </tr>
+                <tr><td colspan="4" class="text-center py-5 text-muted">No movies found.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <div id="paginationControls" class="d-flex justify-content-center gap-3 mt-4 mb-5">
+        {% if has_more %}
+        <button type="button" id="loadMoreBtn" class="btn btn-primary px-4"
+                data-page="{{ (current_page|default(1)) + 1 }}"
+                data-keyword="{{ last_keyword or '' }}"
+                data-category="{{ selected_cat or 'All' }}"
+                data-start="{{ current_start }}"
+                data-end="{{ current_end }}">
+            LOAD MORE (+20) ➔
+        </button>
+        {% endif %}
     </div>
     {% endif %}
 

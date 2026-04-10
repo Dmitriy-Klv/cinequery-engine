@@ -78,20 +78,21 @@ async def search(
             movies = movie_repo.search_all(keyword)
             has_more = False
         else:
-            movies, total = movie_repo.search(keyword, page=page, limit=limit)
-            has_more = total > (page * limit)
+            movies, has_more = movie_repo.search(keyword, page=page)
     else:
         target_categories = [category] if category != "All" else movie_repo.get_all_categories()
 
         current_limit = 1000 if show_all else limit
-        movies, total = movie_repo.find_by_category_and_year(
+        movies, has_more = movie_repo.find_by_category_and_year(
             categories=target_categories,
             start=start,
             end=end,
             page=page,
             limit=current_limit,
         )
-        has_more = total > (page * current_limit) if not show_all else False
+
+        if show_all:
+            has_more = False
 
     return templates.TemplateResponse(
         "index.html",

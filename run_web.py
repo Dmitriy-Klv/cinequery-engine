@@ -55,13 +55,13 @@ async def index(request: Request):
 
 @app.post("/search", response_class=HTMLResponse)
 async def search(
-        request: Request,
-        keyword: str = Form(None),
-        category: str = Form("All"),
-        year_start: int = Form(None),
-        year_end: int = Form(None),
-        page: int = Form(1),
-        show_all: bool = Form(False)
+    request: Request,
+    keyword: str = Form(None),
+    category: str = Form("All"),
+    year_start: int = Form(None),
+    year_end: int = Form(None),
+    page: int = Form(1),
+    show_all: bool = Form(False),
 ):
     min_db, max_db = movie_repo.get_year_range()
     start = year_start if year_start is not None else min_db
@@ -71,9 +71,6 @@ async def search(
     has_more = False
 
     if keyword and keyword.strip():
-        if page == 1:
-            log_repo.add_log(keyword)
-
         if show_all:
             movies = movie_repo.search_all(keyword)
             has_more = False
@@ -109,7 +106,7 @@ async def search(
             "selected_cat": category,
             "current_page": page,
             "has_more": has_more,
-            "show_all": show_all
+            "show_all": show_all,
         },
     )
 

@@ -99,15 +99,20 @@
     {% endif %}
 
     {% if view == "analytics" %}
-    <h3 class="section-title text-center">🔥 POPULAR QUERIES</h3>
+    <h3 class="section-title text-center">🔥 TOP 10 SEARCH QUERIES</h3>
     <div class="row justify-content-center">
         <div class="col-md-6">
             <ul class="list-group">
                 {% for item in stats %}
                 <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <span class="fw-bold">{{ item.query.upper() }}</span>
-                    <span class="badge bg-danger rounded-pill">{{ item.count }} searches</span>
+                    <div>
+                        <span class="text-muted me-2">{{ loop.index }}.</span>
+                        <span class="fw-bold">{{ item.get('query', 'N/A').upper() }}</span>
+                    </div>
+                    <span class="badge bg-danger rounded-pill">{{ item.get('count', 0) }} searches</span>
                 </li>
+                {% else %}
+                <li class="list-group-item text-center text-muted">No analytics data yet. Try searching for something!</li>
                 {% endfor %}
             </ul>
         </div>

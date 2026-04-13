@@ -113,8 +113,14 @@ async def search(
 
 @app.get("/analytics", response_class=HTMLResponse)
 async def analytics(request: Request):
+    top_stats = log_repo.get_top_queries(limit=10)
     return templates.TemplateResponse(
-        "index.html", {"request": request, "stats": log_repo.get_top_queries(), "view": "analytics"}
+        "index.html",
+        {
+            "request": request,
+            "stats": top_stats,
+            "view": "analytics"
+        }
     )
 
 

@@ -214,6 +214,15 @@ body.bg-fade::after {
     border-radius: 10px !important;
 }
 
+.rank {
+    color: var(--accent-red);
+    font-weight: 900;
+    min-width: 28px;
+    display: inline-block;
+    text-align: right;
+    text-shadow: 0 0 8px rgba(0,0,0,0.9);
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-dark); }

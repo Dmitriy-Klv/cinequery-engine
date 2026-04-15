@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!append) {
                 tableBody.innerHTML = '';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
             if (newRows.length > 0 && !newRows[0].innerText.includes("No movies found")) {

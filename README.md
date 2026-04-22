@@ -119,7 +119,7 @@ Create a `.env` file based on `.env.example`.
 
 ### MySQL
 
--   Install MySQL\
+-   Install MySQL
 -   Import the **Sakila** database
 
 ### MongoDB
@@ -152,8 +152,8 @@ pytest tests
 
 Coverage includes:
 
--   Repository layer\
--   Models\
+-   Repository layer
+-   Models
 -   Logging
 
 ------------------------------------------------------------------------
@@ -162,8 +162,8 @@ Coverage includes:
 
 This project demonstrates:
 
--   Clean Architecture\
--   Working with SQL + NoSQL\
+-   Clean Architecture
+-   Working with SQL + NoSQL
 -   Building CLI + Web applications
 
 ------------------------------------------------------------------------
